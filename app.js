@@ -22,4 +22,8 @@ app.get('/test-api', function(req, res) {
     })
 });
 
+const mongoose = require('mongoose');
+var connection = mongoose.createConnection('mongodb://localhost:27018/radio?connectTimeoutMS=100000&socketTimeoutMS=100000');
+
+console.log("App running on port 8000");
 app.listen(8000);
