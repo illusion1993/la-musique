@@ -8,23 +8,6 @@
     crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Test API</h1>
-    <h2>API Response: <span id="api-response"></span></h2>
+    <h1>La-Musique API Home</h1>
 </body>
-
-<script type="text/javascript">
-$(document).ready(function() {
-    // This AJAX call fetches the users count as soon as page is ready
-    $.ajax({
-        type: 'GET',
-        url: "/test-api",
-        success: function(responseData) {
-            if (responseData.data) {
-                $('#api-response').text(responseData.data);
-            }
-        },
-        error: console.error
-    });
-});
-</script>
 </html>
