@@ -10,10 +10,10 @@ module.exports = function () {
     var trie = new t.Trie();
 
     var pagination_page_size = {
-    	stations: 5,
-    	genres: 5,
-    	locations: 5,
-    	languages: 5
+    	stations: 20,
+    	genres: 20,
+    	locations: 20,
+    	languages: 20
     };
     var cache_set = false;
     return {
