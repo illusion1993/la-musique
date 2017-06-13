@@ -50,5 +50,17 @@ app.get('/languages', function(req, res) {
 	}, page_number);
 });
 
+app.get('/stations/search', function(req, res) {
+	if (req.query && req.query.keyword && req.query.keyword.trim()) {
+		station.searchRadio(function(err, results) {
+			res.header("Content-Type",'application/json');
+			res.json(results);
+		}, req.query.keyword.toLowerCase().trim());
+	}
+	else {
+		res.json([]);
+	}
+});
+
 console.log("App running on port 8000");
 app.listen(8000);

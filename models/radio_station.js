@@ -82,3 +82,19 @@ module.exports.getLanguages = function(callback, page_number) {
 		callback(undefined, cache.get_languages(page_number));
 	}
 }
+
+module.exports.searchRadio = function(callback, keyword) {
+	if (!cache.isset()) {
+		RadioStation.find(function(err, stations) {
+			if (err) {
+				throw err;
+			}
+			console.log('caching___');
+			cache.set(stations);
+			callback(err, cache.search(keyword));
+		}).select('title genre stream location language');
+	}
+	else {
+		callback(undefined, cache.search(keyword));
+	}
+}

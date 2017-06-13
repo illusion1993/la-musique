@@ -27,24 +27,24 @@ module.exports = function () {
         	}
         	COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
         		if (obj.title) {
-        			trie.insert(obj.title, index);
+        			trie.insert(obj.title.toLowerCase().trim(), index);
         		}
         		if (obj.genre) {
-        			trie.insert(obj.genre, index);
+        			trie.insert(obj.genre.toLowerCase().trim(), index);
         			if (!covered.genre[obj.genre]) {
         				COLLECTION.ALL_GENRES.push(obj.genre);
         				covered.genre[obj.genre] = true;
         			}
         		}
         		if (obj.location) {
-        			trie.insert(obj.location, index);
+        			trie.insert(obj.location.toLowerCase().trim(), index);
         			if (!covered.location[obj.location]) {
         				COLLECTION.ALL_LOCATIONS.push(obj.location);
         				covered.location[obj.location] = true;
         			}
         		}
         		if (obj.language) {
-        			trie.insert(obj.language, index);
+        			trie.insert(obj.language.toLowerCase().trim(), index);
         			if (!covered.language[obj.language]) {
         				COLLECTION.ALL_LANGUAGES.push(obj.language);
         				covered.language[obj.language] = true;
@@ -89,6 +89,14 @@ module.exports = function () {
         },
         get_languages: function (page_number) {
         	return this._get(page_number, 4);
+        },
+        search: function (keyword) {
+        	var result_ids = [], results = [];
+        	result_ids = trie.search(keyword, 1);
+        	result_ids.forEach(function(obj) {
+        		results.push(COLLECTION.ALL_STATIONS[obj]);
+        	});
+        	return results;
         },
 
         isset: function() { return cache_set; }
