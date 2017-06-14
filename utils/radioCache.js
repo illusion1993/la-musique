@@ -62,7 +62,6 @@ module.exports = function () {
 
         	var begin = page_number * page_size_for_this, end = begin + page_size_for_this;
         	var results = [];
-        	console.log(begin + " - " + end);
         	while(begin < end && begin < collection_size) {
         		if (collection_number == 1) results.push(COLLECTION.ALL_STATIONS[begin]);
 	        	if (collection_number == 2) results.push(COLLECTION.ALL_GENRES[begin]);
