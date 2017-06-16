@@ -44,7 +44,7 @@
                         <span class="testing-lhs">URL: </span>
                     </div>
                     <div class="col-md-10">
-                        <span class="testing-rhs" id="testing-api-url">http://asdasd:8000/api/radio/genres</span>
+                        <span class="testing-rhs" id="testing-api-url"></span>
                     </div>
                 </div>
                 <div class="row test-panel-row">
@@ -143,6 +143,11 @@ function startTest(api) {
             param_data[$(this).attr('data-parameter-name')] = $(this).val();
         });
     }
+
+    $('#api-time').hide();
+    $('#api-test-result').show();
+    $('#api-test-result').text('Waiting for API results...');
+    
     var t1 = performance.now(), t2;
     $.ajax({
         type: api.request.type,
@@ -151,7 +156,6 @@ function startTest(api) {
         success: function(responseData) {
             t2 = performance.now();
             if (responseData) {
-                $('#api-test-result').show();
                 $('#api-test-result').text(JSON.stringify(responseData, null, 4));
                 $('#api-time').show();
                 $('#api-time i').html((t2 - t1).toFixed(4) + 'ms');
