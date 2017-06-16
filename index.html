@@ -23,7 +23,7 @@
         margin-bottom: 10px;
     }
     #api-test-result {
-        max-height: 380px; 
+        max-height: 350px; 
         overflow-y: scroll;
         margin-top: 10px;
         padding: 5px;
@@ -72,6 +72,7 @@
                 </div>
                 <pre id="api-test-result" style="display: none"></pre>
                 <a href="#" class="btn btn-success" id="start-test-button">Test API</a>
+                <span id="api-time">Time taken: <i></i></span>
             </div>
         </div>
     </div>
@@ -120,6 +121,8 @@ function openTesting(api) {
     $('#testing-api-description').html(api.description);
     $('#testing-api-method').html(api.request.type);
     $('#api-test-result').html('').hide();
+    $('#api-time i').html('');
+    $('#api-time').hide();
 
     var str = '';
     api.request.parameters.forEach(function(obj) {
@@ -140,14 +143,18 @@ function startTest(api) {
             param_data[$(this).attr('data-parameter-name')] = $(this).val();
         });
     }
+    var t1 = performance.now(), t2;
     $.ajax({
         type: api.request.type,
         url: document.location.origin + api.url,
         data: param_data,
         success: function(responseData) {
+            t2 = performance.now();
             if (responseData) {
                 $('#api-test-result').show();
                 $('#api-test-result').text(JSON.stringify(responseData, null, 4));
+                $('#api-time').show();
+                $('#api-time i').html((t2 - t1).toFixed(4) + 'ms');
                 console.log(responseData);
                 console.log(JSON.stringify(responseData, null, 4));
             }
