@@ -22,7 +22,7 @@
     .test-panel-row {
         margin-bottom: 10px;
     }
-    #api-test-result {
+    #api-test-result, #api-load-test-result {
         max-height: 350px; 
         overflow-y: scroll;
         margin-top: 10px;
@@ -71,7 +71,11 @@
                     </div>
                 </div>
                 <pre id="api-test-result" style="display: none"></pre>
+                <div id="api-load-test-result" style="display: none">
+
+                </div>
                 <a href="#" class="btn btn-success" id="start-test-button">Test API</a>
+                <a href="#" class="btn btn-success" id="start-load-test-button">Load Test API</a>
                 <span id="api-time">Time taken: <i></i></span>
             </div>
         </div>
@@ -121,6 +125,7 @@ function openTesting(api) {
     $('#testing-api-description').html(api.description);
     $('#testing-api-method').html(api.request.type);
     $('#api-test-result').html('').hide();
+    $('#api-load-test-result').html('').hide();
     $('#api-time i').html('');
     $('#api-time').hide();
 
@@ -145,6 +150,7 @@ function startTest(api) {
     }
 
     $('#api-time').hide();
+    $('#api-load-test-result').html('').hide();
     $('#api-test-result').show();
     $('#api-test-result').text('Waiting for API results...');
     
@@ -166,6 +172,50 @@ function startTest(api) {
         error: console.error
     });
 }
+
+function startLoadTest(api) {
+    var calls = [];
+    api.request.parameters.forEach(function(param) {
+        if (api.load_test && api.load_test[param]) {
+            var param_values = api.load_test[param];
+            for(var i = 0; i < 10; i++) {
+                param_values.forEach(function(param_value) { calls.push({ parameter: param, value: param_value }); });
+            }
+        }
+    });
+
+    var str = '<table class="table" id="load-test-table"><thead><tr><th>Parameter</th><th>Value</th><th>Start Time</th><th>End Time</th><th>Time Taken</th></tr></thead><tbody></tbody></table>';
+    $('#api-load-test-result').html(str).show();
+    $('#api-test-result').html('').hide();
+    $('#api-time i').html('');
+    $('#api-time').hide();
+
+    calls.forEach(function(this_call, call_index) {
+        var t1;
+        str = '<tr class="load-test-row"><td>' + this_call.parameter + '</td><td>' + this_call.value + ' </td><td> </td><td> </td><td> </td>';
+        $('#load-test-table tbody').append(str);
+
+        var param_data = {};
+        param_data[this_call.parameter] = this_call.value;
+        console.log(param_data);
+
+        $.ajax({
+            type: api.request.type,
+            url: document.location.origin + api.url,
+            data: param_data,
+            beforeSend: function() {
+                t1 = performance.now();
+                $('.load-test-row:eq(' + call_index + ') td:eq(2)').text(t1.toFixed(2));
+            },
+            success: function(responseData) {
+                t2 = performance.now();
+                $('.load-test-row:eq(' + call_index + ') td:eq(3)').text(t2.toFixed(2));
+                $('.load-test-row:eq(' + call_index + ') td:eq(4)').text((t2 - t1).toFixed(4) + 'ms');
+            },
+            error: console.error
+        });
+    });
+}
     
 $(document).ready(function() {
     var overlay = $('.overlay');
@@ -176,6 +226,9 @@ $(document).ready(function() {
             request: {
                 type: 'GET',
                 parameters: ['page']
+            },
+            load_test: {
+                page: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
             }
         },
         {
@@ -184,6 +237,9 @@ $(document).ready(function() {
             request: {
                 type: 'GET',
                 parameters: ['page']
+            },
+            load_test: {
+                page: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
             }
         },
         {
@@ -192,6 +248,9 @@ $(document).ready(function() {
             request: {
                 type: 'GET',
                 parameters: ['page']
+            },
+            load_test: {
+                page: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
             }
         },
         {
@@ -200,6 +259,9 @@ $(document).ready(function() {
             request: {
                 type: 'GET',
                 parameters: ['page']
+            },
+            load_test: {
+                page: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
             }
         },
         {
@@ -208,6 +270,9 @@ $(document).ready(function() {
             request: {
                 type: 'GET',
                 parameters: ['keyword']
+            },
+            load_test: {
+                keyword: ['nick', 'nicki', 'ass', 'fm', 'ack', 'tion', 'pol', 'inter', 'stat', 'loca']
             }
         }
     ];
@@ -240,6 +305,10 @@ $(document).ready(function() {
 
     $('#start-test-button').click(function() {
         startTest(api_in_test);
+    });
+
+    $('#start-load-test-button').click(function() {
+        startLoadTest(api_in_test);
     });
 
     $(document).keyup(function(e) {
