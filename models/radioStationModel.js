@@ -24,9 +24,9 @@ module.exports.buildRadioCache = buildCache = function(callback) {
 	}
 }
 
-module.exports.getRadioStations = function(callback, page_number) {
+module.exports.getRadioStations = function(callback, filters, page_number) {
 	page_number = (page_number) ? page_number : 0;
-	callback(radioCache.get_stations(page_number));
+	callback(radioCache.get_stations(filters, page_number));
 }
 
 module.exports.getGenres = function(callback, page_number) {

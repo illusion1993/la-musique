@@ -77,8 +77,36 @@ module.exports = function () {
         		total_items: collection_size
         	};
         },
-        get_stations: function (page_number) {
-        	return this._get(page_number, 1);
+        get_stations: function (filters, page_number) {
+            if (!filters.genre && !filters.location && !filters.language) return this._get(page_number, 1);
+            else {
+                var page_size_for_this, collection_size;
+                var results = [], page_results = [];
+                COLLECTION.ALL_STATIONS.forEach(function(station) {
+                    var okay_to_add = true;
+                    for (filter_name in filters) {
+                        if (!station[filter_name] || filters[filter_name].toLowerCase() != station[filter_name].toLowerCase()) 
+                            okay_to_add = false;
+                    }
+                    if (okay_to_add) results.push(station);
+                });
+
+                page_size_for_this = pagination_page_size.stations;
+                collection_size = results.length;
+                var begin = page_number * page_size_for_this, end = begin + page_size_for_this;
+
+                while(begin < end && begin < collection_size) {
+                    page_results.push(results[begin]);
+                    begin++;
+                }
+                return {
+                    results: page_results,
+                    page_number: page_number + 1,
+                    page_size: page_size_for_this,
+                    total_pages: parseInt(collection_size / page_size_for_this) + (collection_size % page_size_for_this != 0),
+                    total_items: collection_size
+                };
+            }
         },
         get_genres: function (page_number) {
         	return this._get(page_number, 2);
