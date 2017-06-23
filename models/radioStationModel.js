@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var dbConnection = require('../db/radio');
 var radioCache = require('../utils/radioCache');
 var radioStationSchema = mongoose.Schema({
 	title: { type: String },
@@ -9,7 +10,7 @@ var radioStationSchema = mongoose.Schema({
 	language: { type: String },
 	protocol: { type: String }
 });
-var RadioStation = module.exports = mongoose.model('stations', radioStationSchema);
+var RadioStation = module.exports = dbConnection.model('stations', radioStationSchema);
 var isBuildingCache = false, buildCache;
 
 module.exports.buildRadioCache = buildCache = function(callback) {
