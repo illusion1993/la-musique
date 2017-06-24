@@ -1,5 +1,7 @@
 var t = require('./trie');
-var icecastParser = require('icecast-parser');
+var internetradio = require('node-internet-radio');
+
+process.setMaxListeners(0);
 
 module.exports = function () {
 	var COLLECTION = {};
@@ -9,6 +11,7 @@ module.exports = function () {
     COLLECTION.ALL_LANGUAGES = [];
     COLLECTION.METADATA = {};
     COLLECTION.INVALID_STREAM_URLS = {};
+    COLLECTION.METASIZE = 0;
 
     var trie = new t.Trie();
 
@@ -29,63 +32,43 @@ module.exports = function () {
         		language: {}
         	}
         	COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
-        		if (obj.title) {
-        			trie.insert(obj.title.toLowerCase().trim(), index);
-        		}
-        		if (obj.genre) {
-        			trie.insert(obj.genre.toLowerCase().trim(), index);
-        			if (!covered.genre[obj.genre]) {
-        				COLLECTION.ALL_GENRES.push(obj.genre);
-        				covered.genre[obj.genre] = true;
-        			}
-        		}
-        		if (obj.location) {
-        			trie.insert(obj.location.toLowerCase().trim(), index);
-        			if (!covered.location[obj.location]) {
-        				COLLECTION.ALL_LOCATIONS.push(obj.location);
-        				covered.location[obj.location] = true;
-        			}
-        		}
-        		if (obj.language) {
-        			trie.insert(obj.language.toLowerCase().trim(), index);
-        			if (!covered.language[obj.language]) {
-        				COLLECTION.ALL_LANGUAGES.push(obj.language);
-        				covered.language[obj.language] = true;
-        			}
-        		}
+                // Insert fields in trie
+
+        		// if (obj.title) {
+        		// 	trie.insert(obj.title.toLowerCase().trim(), index);
+        		// }
+        		// if (obj.genre) {
+        		// 	trie.insert(obj.genre.toLowerCase().trim(), index);
+        		// 	if (!covered.genre[obj.genre]) {
+        		// 		COLLECTION.ALL_GENRES.push(obj.genre);
+        		// 		covered.genre[obj.genre] = true;
+        		// 	}
+        		// }
+        		// if (obj.location) {
+        		// 	trie.insert(obj.location.toLowerCase().trim(), index);
+        		// 	if (!covered.location[obj.location]) {
+        		// 		COLLECTION.ALL_LOCATIONS.push(obj.location);
+        		// 		covered.location[obj.location] = true;
+        		// 	}
+        		// }
+        		// if (obj.language) {
+        		// 	trie.insert(obj.language.toLowerCase().trim(), index);
+        		// 	if (!covered.language[obj.language]) {
+        		// 		COLLECTION.ALL_LANGUAGES.push(obj.language);
+        		// 		covered.language[obj.language] = true;
+        		// 	}
+        		// }
 
                 // Getting Radio Stream Metadata
                 if (obj.stream && obj.stream.length) {
-                    if (obj.stream.indexOf('://') != -1 && obj.stream.indexOf('http://') != -1) {
-                        var radioStation = new icecastParser({
-                            url: obj.stream, // URL to radio station 
-                            keepListen: false, // don't listen radio station after metadata was received 
-                            autoUpdate: true, // update metadata after interval 
-                            errorInterval: 10 * 60, // retry connection after 10 minutes 
-                            emptyInterval: 5 * 60, // retry get metadata after 5 minutes 
-                            metadataInterval: 20 // update metadata after 20 seconds 
-                        });
-                        radioStation.on('metadata', function(metadata) {
-                            // console.log('setting for index: ' + index);
-                            // COLLECTION.ALL_STATIONS[index]['working'] = true;
-                            // COLLECTION.ALL_STATIONS[index]['now_playing'] = metadata.StreamTitle;
-
-                            // console.log('meta - ' + COLLECTION.ALL_STATIONS[index]);
-                            COLLECTION.METADATA[index] = metadata;
-                            // console.log(COLLECTION.METADATA);
-                        });
-                        radioStation.on('error', function(error) {
-                            // COLLECTION.ALL_STATIONS[index].working = false;
-                            // console.log('err - ' + COLLECTION.ALL_STATIONS[index]);
-                        });
-                        radioStation.on('empty', function() {
-                            // COLLECTION.ALL_STATIONS[index].now_playing = '';
-                            // console.log('empty - ' + COLLECTION.ALL_STATIONS[index]);
-                        });
-                    }
-                    else {
-                        console.log('Faulty Stream URL: ' + obj.stream);
-                    }
+                    internetradio.getStationInfo(obj.stream, function(error, station) {
+                        if (station && station.title) COLLECTION.METADATA[index] = station.title;
+                        
+                        if (station && station.title) {
+                            COLLECTION.METASIZE += 1;
+                            console.log(COLLECTION.METASIZE + ' stations OKAY out of ' + COLLECTION.ALL_STATIONS.length);
+                        }
+                    });
                 }
         	});
         },
@@ -112,7 +95,7 @@ module.exports = function () {
                         meta: COLLECTION.METADATA[begin]
                     };
                     results.push(result);
-                    console.log("Metadata is found for " + COLLECTION.METADATA.length + "/" + COLLECTION.ALL_STATIONS.length + " Radio Stations.");
+                    // console.log("Metadata is found for " + COLLECTION.METASIZE + "/" + COLLECTION.ALL_STATIONS.length + " Radio Stations.");
                 }
 	        	if (collection_number == 2) results.push(COLLECTION.ALL_GENRES[begin]);
 	        	if (collection_number == 3) results.push(COLLECTION.ALL_LOCATIONS[begin]);
