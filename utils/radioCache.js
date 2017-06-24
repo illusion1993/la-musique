@@ -8,6 +8,7 @@ module.exports = function () {
     COLLECTION.ALL_LOCATIONS = [];
     COLLECTION.ALL_LANGUAGES = [];
     COLLECTION.METADATA = {};
+    COLLECTION.INVALID_STREAM_URLS = {};
 
     var trie = new t.Trie();
 
@@ -55,31 +56,36 @@ module.exports = function () {
 
                 // Getting Radio Stream Metadata
                 if (obj.stream && obj.stream.length) {
-                    var radioStation = new icecastParser({
-                        url: obj.stream, // URL to radio station 
-                        keepListen: false, // don't listen radio station after metadata was received 
-                        autoUpdate: true, // update metadata after interval 
-                        errorInterval: 10 * 60, // retry connection after 10 minutes 
-                        emptyInterval: 5 * 60, // retry get metadata after 5 minutes 
-                        metadataInterval: 20 // update metadata after 20 seconds 
-                    });
-                    radioStation.on('metadata', function(metadata) {
-                        // console.log('setting for index: ' + index);
-                        // COLLECTION.ALL_STATIONS[index]['working'] = true;
-                        // COLLECTION.ALL_STATIONS[index]['now_playing'] = metadata.StreamTitle;
+                    if (obj.stream.indexOf('://') != -1 && obj.stream.indexOf('http://') != -1) {
+                        var radioStation = new icecastParser({
+                            url: obj.stream, // URL to radio station 
+                            keepListen: false, // don't listen radio station after metadata was received 
+                            autoUpdate: true, // update metadata after interval 
+                            errorInterval: 10 * 60, // retry connection after 10 minutes 
+                            emptyInterval: 5 * 60, // retry get metadata after 5 minutes 
+                            metadataInterval: 20 // update metadata after 20 seconds 
+                        });
+                        radioStation.on('metadata', function(metadata) {
+                            // console.log('setting for index: ' + index);
+                            // COLLECTION.ALL_STATIONS[index]['working'] = true;
+                            // COLLECTION.ALL_STATIONS[index]['now_playing'] = metadata.StreamTitle;
 
-                        // console.log('meta - ' + COLLECTION.ALL_STATIONS[index]);
-                        COLLECTION.METADATA[index] = metadata;
-                        // console.log(COLLECTION.METADATA);
-                    });
-                    radioStation.on('error', function(error) {
-                        // COLLECTION.ALL_STATIONS[index].working = false;
-                        // console.log('err - ' + COLLECTION.ALL_STATIONS[index]);
-                    });
-                    radioStation.on('empty', function() {
-                        // COLLECTION.ALL_STATIONS[index].now_playing = '';
-                        // console.log('empty - ' + COLLECTION.ALL_STATIONS[index]);
-                    });
+                            // console.log('meta - ' + COLLECTION.ALL_STATIONS[index]);
+                            COLLECTION.METADATA[index] = metadata;
+                            // console.log(COLLECTION.METADATA);
+                        });
+                        radioStation.on('error', function(error) {
+                            // COLLECTION.ALL_STATIONS[index].working = false;
+                            // console.log('err - ' + COLLECTION.ALL_STATIONS[index]);
+                        });
+                        radioStation.on('empty', function() {
+                            // COLLECTION.ALL_STATIONS[index].now_playing = '';
+                            // console.log('empty - ' + COLLECTION.ALL_STATIONS[index]);
+                        });
+                    }
+                    else {
+                        console.log('Faulty Stream URL: ' + obj.stream);
+                    }
                 }
         	});
         },
