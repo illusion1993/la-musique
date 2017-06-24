@@ -12,6 +12,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "firebase-admin": "^5.0.0",
+    "icecast-parser": "^3.0.0",
     "mongodb": "^2.2.28",
     "mongoose": "^4.10.5"
   }

@@ -1,4 +1,5 @@
 var t = require('./trie');
+var icecastParser = require('icecast-parser');
 
 module.exports = function () {
 	var COLLECTION = {};
@@ -6,6 +7,7 @@ module.exports = function () {
     COLLECTION.ALL_GENRES = [];
     COLLECTION.ALL_LOCATIONS = [];
     COLLECTION.ALL_LANGUAGES = [];
+    COLLECTION.METADATA = {};
 
     var trie = new t.Trie();
 
@@ -50,6 +52,35 @@ module.exports = function () {
         				covered.language[obj.language] = true;
         			}
         		}
+
+                // Getting Radio Stream Metadata
+                if (obj.stream && obj.stream.length) {
+                    var radioStation = new icecastParser({
+                        url: obj.stream, // URL to radio station 
+                        keepListen: false, // don't listen radio station after metadata was received 
+                        autoUpdate: true, // update metadata after interval 
+                        errorInterval: 10 * 60, // retry connection after 10 minutes 
+                        emptyInterval: 5 * 60, // retry get metadata after 5 minutes 
+                        metadataInterval: 20 // update metadata after 20 seconds 
+                    });
+                    radioStation.on('metadata', function(metadata) {
+                        // console.log('setting for index: ' + index);
+                        // COLLECTION.ALL_STATIONS[index]['working'] = true;
+                        // COLLECTION.ALL_STATIONS[index]['now_playing'] = metadata.StreamTitle;
+
+                        // console.log('meta - ' + COLLECTION.ALL_STATIONS[index]);
+                        COLLECTION.METADATA[index] = metadata;
+                        // console.log(COLLECTION.METADATA);
+                    });
+                    radioStation.on('error', function(error) {
+                        // COLLECTION.ALL_STATIONS[index].working = false;
+                        // console.log('err - ' + COLLECTION.ALL_STATIONS[index]);
+                    });
+                    radioStation.on('empty', function() {
+                        // COLLECTION.ALL_STATIONS[index].now_playing = '';
+                        // console.log('empty - ' + COLLECTION.ALL_STATIONS[index]);
+                    });
+                }
         	});
         },
         _get: function(page_number, collection_number) {
@@ -62,8 +93,21 @@ module.exports = function () {
 
         	var begin = page_number * page_size_for_this, end = begin + page_size_for_this;
         	var results = [];
+
         	while(begin < end && begin < collection_size) {
-        		if (collection_number == 1) results.push(COLLECTION.ALL_STATIONS[begin]);
+        		if (collection_number == 1) {
+                    var result = {
+                        _id: COLLECTION.ALL_STATIONS[begin]._id,
+                        title: COLLECTION.ALL_STATIONS[begin].title,
+                        genre: COLLECTION.ALL_STATIONS[begin].genre,
+                        location: COLLECTION.ALL_STATIONS[begin].location,
+                        language: COLLECTION.ALL_STATIONS[begin].language,
+                        stream: COLLECTION.ALL_STATIONS[begin].stream,
+                        meta: COLLECTION.METADATA[begin]
+                    };
+                    results.push(result);
+                    console.log("Metadata is found for " + COLLECTION.METADATA.length + "/" + COLLECTION.ALL_STATIONS.length + " Radio Stations.");
+                }
 	        	if (collection_number == 2) results.push(COLLECTION.ALL_GENRES[begin]);
 	        	if (collection_number == 3) results.push(COLLECTION.ALL_LOCATIONS[begin]);
 	        	if (collection_number == 4) results.push(COLLECTION.ALL_LANGUAGES[begin]);
