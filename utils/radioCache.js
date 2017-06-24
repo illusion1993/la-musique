@@ -23,15 +23,46 @@ module.exports = function () {
     };
     var cache_set = false;
     return {
+        _removeStationsWithoutMeta: function() {
+            var stations = [];
+            COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
+                if (COLLECTION.METADATA[index]) stations.push(obj);
+            });
+            COLLECTION.ALL_STATIONS = stations;
+            console.log('Only stations left with meta: ' + COLLECTION.ALL_STATIONS.length);
+        },
+        _findMeta: function findMeta(station_index) {
+            console.log('Checking meta of ' + COLLECTION.ALL_STATIONS[station_index].stream);
+            if (station_index < COLLECTION.ALL_STATIONS.length && COLLECTION.ALL_STATIONS[station_index].stream && COLLECTION.ALL_STATIONS[station_index].stream.length) {
+                var url = COLLECTION.ALL_STATIONS[station_index].stream;
+                internetradio.getStationInfo(url, function(error, station) {
+                    if (station && station.title) COLLECTION.METADATA[station_index] = station.title;
+                    
+                    if (station && station.title) {
+                        COLLECTION.METASIZE += 1;
+                        console.log(COLLECTION.METASIZE + ' stations OKAY out of ' + COLLECTION.ALL_STATIONS.length);
+                    }
+
+                    findMeta(station_index + 1);
+                });
+            }
+            else if (station_index > COLLECTION.ALL_STATIONS.length) {
+                this._removeStationsWithoutMeta();
+            }
+        },
     	set: function (val) {
         	COLLECTION.ALL_STATIONS = val; cache_set = true;
+            
+            // Getting Radio Stream Metadata
+            this._findMeta(0);
+
         	covered = {
         		title: {},
         		genre: {},
         		location: {},
         		language: {}
         	}
-        	COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
+        	// COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
                 // Insert fields in trie
 
         		// if (obj.title) {
@@ -58,19 +89,7 @@ module.exports = function () {
         		// 		covered.language[obj.language] = true;
         		// 	}
         		// }
-
-                // Getting Radio Stream Metadata
-                if (obj.stream && obj.stream.length) {
-                    internetradio.getStationInfo(obj.stream, function(error, station) {
-                        if (station && station.title) COLLECTION.METADATA[index] = station.title;
-                        
-                        if (station && station.title) {
-                            COLLECTION.METASIZE += 1;
-                            console.log(COLLECTION.METASIZE + ' stations OKAY out of ' + COLLECTION.ALL_STATIONS.length);
-                        }
-                    });
-                }
-        	});
+        	// });
         },
         _get: function(page_number, collection_number) {
         	var page_size_for_this, collection_size;
