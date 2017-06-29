@@ -142,21 +142,6 @@ module.exports = function () {
         	});
         	return results;
         },
-        simpleSearch: function (keyword) {
-            var results = [];
-            keyword = keyword.toLowerCase();
-            COLLECTION.ALL_STATIONS.forEach(function(station) {
-                var title = (station.title) ? station.title.toLowerCase() : '',
-                genre = (station.genre) ? station.genre.toLowerCase() : '',
-                location = (station.location) ? station.location.toLowerCase() : '',
-                language = (station.language) ? station.language.toLowerCase() : '';
-
-                if (title.indexOf(keyword) != -1 || genre.indexOf(keyword) != -1 || location.indexOf(keyword) != -1 || language.indexOf(keyword) != -1) {
-                    results.push(station);
-                }
-            });
-            return results;
-        },
 
         isset: function() { return cache_set; }
     }

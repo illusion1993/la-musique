@@ -46,5 +46,5 @@ module.exports.getLanguages = function(callback, page_number) {
 }
 
 module.exports.searchRadio = function(callback, keyword) {
-	callback(radioCache.simpleSearch(keyword));
+	callback(radioCache.trieSearch(keyword));
 }
