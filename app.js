@@ -16,5 +16,8 @@ app.get('/api/radio/locations', radioAPIControllers.getRadioLocations);
 app.get('/api/radio/languages', radioAPIControllers.getRadioLanguages);
 app.get('/api/radio/search', radioAPIControllers.searchRadioStations);
 
+var artistAPIControllers = require('./controllers/artistAPIControllers');
+app.get('/api/artists', artistAPIControllers.getArtists);
+
 console.log('App running on port 8000');
 app.listen(8000);
