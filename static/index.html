@@ -285,7 +285,18 @@ $(document).ready(function() {
             load_test: {
                 keyword: ['nick', 'nicki', 'ass', 'fm', 'ack', 'tion', 'pol', 'inter', 'stat', 'loca']
             }
-        }
+        },
+        {
+            url: "/api/artists",
+            description: "Provides a list of all artists in DB. This is a paginated api i.e. all the results are not provided in single request, rather they are divided into pages.",
+            request: {
+                type: 'GET',
+                parameters: ['page']
+            },
+            load_test: {
+                page: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+            }
+        },
     ];
     APIs.forEach(function(obj, index) {
         var str = '<tr>';
