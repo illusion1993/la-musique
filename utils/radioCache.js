@@ -9,9 +9,6 @@ module.exports = function () {
     COLLECTION.ALL_GENRES = [];
     COLLECTION.ALL_LOCATIONS = [];
     COLLECTION.ALL_LANGUAGES = [];
-    COLLECTION.METADATA = {};
-    COLLECTION.INVALID_STREAM_URLS = {};
-    COLLECTION.METASIZE = 0;
 
     var trie = new t.Trie();
 
@@ -23,73 +20,43 @@ module.exports = function () {
     };
     var cache_set = false;
     return {
-        _removeStationsWithoutMeta: function() {
-            var stations = [];
-            COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
-                if (COLLECTION.METADATA[index]) stations.push(obj);
-            });
-            COLLECTION.ALL_STATIONS = stations;
-            console.log('Only stations left with meta: ' + COLLECTION.ALL_STATIONS.length);
-        },
-        _findMeta: function findMeta(station_index) {
-            console.log('Checking meta of ' + COLLECTION.ALL_STATIONS[station_index].stream);
-            if (station_index < COLLECTION.ALL_STATIONS.length && COLLECTION.ALL_STATIONS[station_index].stream && COLLECTION.ALL_STATIONS[station_index].stream.length) {
-                var url = COLLECTION.ALL_STATIONS[station_index].stream;
-                internetradio.getStationInfo(url, function(error, station) {
-                    if (station && station.title) COLLECTION.METADATA[station_index] = station.title;
-                    
-                    if (station && station.title) {
-                        COLLECTION.METASIZE += 1;
-                        console.log(COLLECTION.METASIZE + ' stations OKAY out of ' + COLLECTION.ALL_STATIONS.length);
-                    }
-
-                    findMeta(station_index + 1);
-                });
-            }
-            else if (station_index > COLLECTION.ALL_STATIONS.length) {
-                this._removeStationsWithoutMeta();
-            }
-        },
     	set: function (val) {
         	COLLECTION.ALL_STATIONS = val; cache_set = true;
             
-            // Getting Radio Stream Metadata
-            this._findMeta(0);
-
         	covered = {
         		title: {},
         		genre: {},
         		location: {},
         		language: {}
         	}
-        	// COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
+        	COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
                 // Insert fields in trie
 
-        		// if (obj.title) {
-        		// 	trie.insert(obj.title.toLowerCase().trim(), index);
-        		// }
-        		// if (obj.genre) {
-        		// 	trie.insert(obj.genre.toLowerCase().trim(), index);
-        		// 	if (!covered.genre[obj.genre]) {
-        		// 		COLLECTION.ALL_GENRES.push(obj.genre);
-        		// 		covered.genre[obj.genre] = true;
-        		// 	}
-        		// }
-        		// if (obj.location) {
-        		// 	trie.insert(obj.location.toLowerCase().trim(), index);
-        		// 	if (!covered.location[obj.location]) {
-        		// 		COLLECTION.ALL_LOCATIONS.push(obj.location);
-        		// 		covered.location[obj.location] = true;
-        		// 	}
-        		// }
-        		// if (obj.language) {
-        		// 	trie.insert(obj.language.toLowerCase().trim(), index);
-        		// 	if (!covered.language[obj.language]) {
-        		// 		COLLECTION.ALL_LANGUAGES.push(obj.language);
-        		// 		covered.language[obj.language] = true;
-        		// 	}
-        		// }
-        	// });
+        		if (obj.title) {
+        			trie.insert(obj.title.toLowerCase().trim(), index);
+        		}
+        		if (obj.genre) {
+        			trie.insert(obj.genre.toLowerCase().trim(), index);
+        			if (!covered.genre[obj.genre]) {
+        				COLLECTION.ALL_GENRES.push(obj.genre);
+        				covered.genre[obj.genre] = true;
+        			}
+        		}
+        		if (obj.location) {
+        			trie.insert(obj.location.toLowerCase().trim(), index);
+        			if (!covered.location[obj.location]) {
+        				COLLECTION.ALL_LOCATIONS.push(obj.location);
+        				covered.location[obj.location] = true;
+        			}
+        		}
+        		if (obj.language) {
+        			trie.insert(obj.language.toLowerCase().trim(), index);
+        			if (!covered.language[obj.language]) {
+        				COLLECTION.ALL_LANGUAGES.push(obj.language);
+        				covered.language[obj.language] = true;
+        			}
+        		}
+        	});
         },
         _get: function(page_number, collection_number) {
         	var page_size_for_this, collection_size;
@@ -111,10 +78,8 @@ module.exports = function () {
                         location: COLLECTION.ALL_STATIONS[begin].location,
                         language: COLLECTION.ALL_STATIONS[begin].language,
                         stream: COLLECTION.ALL_STATIONS[begin].stream,
-                        meta: COLLECTION.METADATA[begin]
                     };
                     results.push(result);
-                    // console.log("Metadata is found for " + COLLECTION.METASIZE + "/" + COLLECTION.ALL_STATIONS.length + " Radio Stations.");
                 }
 	        	if (collection_number == 2) results.push(COLLECTION.ALL_GENRES[begin]);
 	        	if (collection_number == 3) results.push(COLLECTION.ALL_LOCATIONS[begin]);
