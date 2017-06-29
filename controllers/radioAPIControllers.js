@@ -1,4 +1,5 @@
 var radioStationModel = require('../models/radioStationModel');
+radioStationModel.buildRadioCache();
 
 exports.getRadioStations = function(req, res) {
 	var page_number = (req.query && req.query.page && (req.query.page == parseInt(req.query.page))) ? req.query.page - 1 : 0;

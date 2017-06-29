@@ -5,9 +5,6 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var radioStationModel = require('./models/radioStationModel');
-radioStationModel.buildRadioCache();
-
 var homePageControllers = require('./controllers/homePageControllers');
 app.get('/', homePageControllers.getHomePage);
 app.get('/api/', homePageControllers.getHomePage);
