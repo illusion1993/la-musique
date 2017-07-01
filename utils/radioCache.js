@@ -1,4 +1,4 @@
-var t = require('./trie');
+var t = require('./trie_opt');
 
 module.exports = function () {
     var COLLECTION = {};
@@ -51,6 +51,7 @@ module.exports = function () {
                     }
                 }
             });
+            trie.total_nodes_count();
         },
         _get: function(page_number, collection_number) {
             var page_size_for_this, collection_size;

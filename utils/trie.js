@@ -53,4 +53,8 @@ Trie.prototype.search = function(keyword, search_in_between) {
 	return results;
 }
 
+Trie.prototype.total_nodes_count = function() {
+	console.log('Total nodes are: ' + NODE_LIST.length);
+}
+
 exports.Trie = Trie;
