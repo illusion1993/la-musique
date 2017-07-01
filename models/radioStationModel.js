@@ -46,5 +46,13 @@ module.exports.getLanguages = function(callback, page_number) {
 }
 
 module.exports.searchRadio = function(callback, keyword) {
-	callback(radioCache.search(keyword));
+	var search_result_ids = radioCache.search(keyword);
+	search_result_ids.forEach(function(obj, index, arr) {
+		arr[index] = mongoose.Types.ObjectId(obj);
+	});
+	RadioStation.find({
+		_id: { $in: search_result_ids }
+	}, function(err, results) {
+		callback(results);
+	})
 }

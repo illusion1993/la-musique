@@ -1,3 +1,5 @@
+var TrieNodeModel = require('../models/radioTrieNodeModel');
+
 var NODE_LIST = [];				// [ Node, Node, ... ]
 var CHAR_INDICES = {};			// { c: [1, 12, 34], a: [2, 5, 6] }
 
@@ -30,10 +32,12 @@ Node.prototype.search = function(keyword, index) {
 
 function Trie() {
 	this.root = new Node('');
+	this.data_length = 0;
 }
 
 Trie.prototype.insert = function(word, data) {
 	if (word) this.root.insert(word, data, 0);
+	this.data_length += word.length;
 }
 
 Trie.prototype.search = function(keyword, search_in_between) {
@@ -55,6 +59,26 @@ Trie.prototype.search = function(keyword, search_in_between) {
 
 Trie.prototype.total_nodes_count = function() {
 	console.log('Total nodes are: ' + NODE_LIST.length);
+	console.log('Data length is : ' + this.data_length);
+}
+
+Trie.prototype.storeTrie = function() {
+	NODE_LIST.forEach(function(obj, index) {
+		var node_obj = {
+			value: obj.value,
+			index: obj.index,
+			data: obj.data
+		};
+		for (var i in obj.children_indices) {
+			node_obj[i] = obj.children_indices[i];
+		}
+
+		var node = new TrieNodeModel(node_obj);
+		node.save(function (err, n) {
+			if (err) return console.error(err);
+			if (index % 100 == 0) console.log('saved ' + index);
+		});
+	})
 }
 
 exports.Trie = Trie;

@@ -1,4 +1,4 @@
-var t = require('./trie_opt');
+var t = require('./trie');
 
 module.exports = function () {
     var COLLECTION = {};
@@ -27,24 +27,28 @@ module.exports = function () {
             }
             COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
                 if (obj.title) {
-                    trie.insert(obj.title.toLowerCase().trim(), index);
+                    // trie.insert(obj.title.toLowerCase().trim(), index);
+                    trie.insert(obj.title.toLowerCase().trim(), obj._id);
                 }
                 if (obj.genre) {
-                    trie.insert(obj.genre.toLowerCase().trim(), index);
+                    // trie.insert(obj.genre.toLowerCase().trim(), index);
+                    trie.insert(obj.genre.toLowerCase().trim(), obj._id);
                     if (!covered.genre[obj.genre]) {
                         COLLECTION.ALL_GENRES.push(obj.genre);
                         covered.genre[obj.genre] = true;
                     }
                 }
                 if (obj.location) {
-                    trie.insert(obj.location.toLowerCase().trim(), index);
+                    // trie.insert(obj.location.toLowerCase().trim(), index);
+                    trie.insert(obj.location.toLowerCase().trim(), obj._id);
                     if (!covered.location[obj.location]) {
                         COLLECTION.ALL_LOCATIONS.push(obj.location);
                         covered.location[obj.location] = true;
                     }
                 }
                 if (obj.language) {
-                    trie.insert(obj.language.toLowerCase().trim(), index);
+                    // trie.insert(obj.language.toLowerCase().trim(), index);
+                    trie.insert(obj.language.toLowerCase().trim(), obj._id);
                     if (!covered.language[obj.language]) {
                         COLLECTION.ALL_LANGUAGES.push(obj.language);
                         covered.language[obj.language] = true;
@@ -52,6 +56,7 @@ module.exports = function () {
                 }
             });
             trie.total_nodes_count();
+            // trie.storeTrie();
         },
         _get: function(page_number, collection_number) {
             var page_size_for_this, collection_size;
@@ -121,10 +126,12 @@ module.exports = function () {
         search: function (keyword) {
             var result_ids = [], results = [];
             result_ids = trie.search(keyword, 1);
-            result_ids.forEach(function(obj) {
-                results.push(COLLECTION.ALL_STATIONS[obj]);
-            });
-            return results;
+            console.log('result_ids are: ' + result_ids);
+            // result_ids.forEach(function(obj) {
+            //     results.push(COLLECTION.ALL_STATIONS[obj]);
+            // });
+            // return results;
+            return result_ids;
         },
 
         isset: function() { return cache_set; }
