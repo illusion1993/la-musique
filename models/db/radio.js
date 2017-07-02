@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var mongoURI = require('../utils/mongoURI');
+var mongoURI = require('./mongoURI');
 
 connection = mongoose.createConnection(mongoURI.getMongoURI('radio'));
 

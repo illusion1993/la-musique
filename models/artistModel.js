@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dbConnection = require('../db/discogs');
+var dbConnection = require('./db/discogs');
 var mongoosePaginate = require('mongoose-paginate');
 var appConstants = require('../appConstants');
 
