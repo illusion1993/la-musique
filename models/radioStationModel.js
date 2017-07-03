@@ -78,7 +78,7 @@ module.exports = function () {
 			if (stations) {
 				if (build_cache) radioCache.set(stations);
 				if (build_trie) {
-					radioCache.build_trie(stations, function() {console.log('Built Trie____')});
+					radioCache.build_trie(stations, function() {});
 					if (store_trie) {
 						var trie_nodes = radioCache.get_trie_nodes();
 						trie_nodes[0].data = [];

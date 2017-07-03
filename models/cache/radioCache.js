@@ -23,6 +23,7 @@ module.exports = function () {
                 if (obj.language) { store_words(obj.language.toLowerCase().trim().split(' ')); }
             });
             trie.total_nodes_count();
+            console.log('Built radio trie___');
             if (callback && typeof(callback) == 'function') callback();
         },
         
@@ -48,6 +49,7 @@ module.exports = function () {
             COLLECTION.ALL_GENRES = Object.keys(map.genre);
             COLLECTION.ALL_LOCATIONS = Object.keys(map.location);
             COLLECTION.ALL_LANGUAGES = Object.keys(map.language);
+            console.log('Built radio cache___');
         },
 
         _get: function(page_number, pagination_size, collection_number) {

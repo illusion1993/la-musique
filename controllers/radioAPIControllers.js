@@ -4,7 +4,6 @@ module.exports = function (config) {
 
 	radioStationModel.buildRadioCache(function(err){
 		if (err) console.log(err);
-		else console.log('Built Radio Cache____');
 	}, config.USE_IN_APP_CACHE, config.BUILD_SEARCH_TRIE, config.STORE_SEARCH_TRIE);
 
 	// Helper functions to handle request/response
