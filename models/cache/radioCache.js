@@ -13,11 +13,16 @@ module.exports = function () {
     return {
         build_trie: function (callback) {
             COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
-                if (obj.title) { trie.insert(obj.title.toLowerCase().trim(), obj._id); }
-                if (obj.genre) { trie.insert(obj.genre.toLowerCase().trim(), obj._id); }
-                if (obj.location) { trie.insert(obj.location.toLowerCase().trim(), obj._id); }
-                if (obj.language) { trie.insert(obj.language.toLowerCase().trim(), obj._id); }
+                var store_words = function(words) {
+                    words.forEach(function(word) { trie.insert(word, obj._id); })
+                };
+
+                if (obj.title) { store_words(obj.title.toLowerCase().trim().split(' ')); }
+                if (obj.genre) { store_words(obj.genre.toLowerCase().trim().split(' ')); }
+                if (obj.location) { store_words(obj.location.toLowerCase().trim().split(' ')); }
+                if (obj.language) { store_words(obj.language.toLowerCase().trim().split(' ')); }
             });
+            trie.total_nodes_count();
             if (callback && typeof(callback) == 'function') callback();
         },
         
