@@ -49,7 +49,10 @@ module.exports = function () {
 				// self.connection.close();
 				return;
 			}
-			if (index == 0) query_filter.value = this.keyword[index];
+			// if (index == 0) query_filter.value = this.keyword[index];
+			if (index < 0) {
+				query_filter.index = 0;
+			}
 			else {
 				// find children indices of self.nodes
 				var children_indices = [];
@@ -67,7 +70,7 @@ module.exports = function () {
 				self._find_next(index + 1);
 			});
 		};
-		this._find_next(0);
+		this._find_next(-1);
 	}
 
 	module.buildRadioCache = function(callback, build_trie, store_trie) {
@@ -78,6 +81,7 @@ module.exports = function () {
 					radioCache.build_trie(function() {console.log('Built Trie____')});
 					if (store_trie) {
 						var trie_nodes = radioCache.get_trie_nodes();
+						trie_nodes[0].data = [];
 						// Save these nodes in bulk
 						TrieNodeModel.collection.remove({}, function(err) {
 							console.log('Removed all trie nodes first___');
@@ -89,7 +93,7 @@ module.exports = function () {
 							// });
 							
 							// This hacky solution is to insert nodes in chunks
-							var next_node = 1;
+							var next_node = 0;
 							var insert_batch = function() {
 								var current_batch = [], i;
 								for (i = 0; i < 1000 && i + next_node < trie_nodes.length; i++) {
