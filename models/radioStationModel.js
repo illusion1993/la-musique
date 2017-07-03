@@ -81,10 +81,33 @@ module.exports = function () {
 						// Save these nodes in bulk
 						TrieNodeModel.collection.remove({}, function(err) {
 							console.log('Removed all trie nodes first___');
-							TrieNodeModel.insertMany(trie_nodes, function(err) {
-								console.log('Inserted all trie nodes in db___');
-							})
+							console.log('now going to insert ' + trie_nodes.length + ' nodes');
+
+							// insertMany could cause memory issue on large data
+							// TrieNodeModel.insertMany(trie_nodes, function(err) {
+							// 	console.log('Inserted all trie nodes in db___');
+							// });
+							
+							// This hacky solution is to insert nodes in chunks
+							var next_node = 1;
+							var insert_batch = function() {
+								var current_batch = [], i;
+								for (i = 0; i < 1000 && i + next_node < trie_nodes.length; i++) {
+									trie_nodes[i + next_node]['$'] = undefined;
+									current_batch.push(trie_nodes[i + next_node]);
+								}
+								next_node = next_node + i;
+								TrieNodeModel.insertMany(current_batch, function(err) {
+									if (err) console.log(err);
+									else {
+										console.log('inserted one more batch.');
+										if (next_node < trie_nodes.length) insert_batch();
+									}
+								})
+							}
+							insert_batch();
 						});
+
 					}
 				}
 			}
