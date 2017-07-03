@@ -123,6 +123,24 @@ module.exports = function () {
 		callback(radioCache.get_stations(filters, (page_number) ? page_number : 0, pagination_size));
 	}
 
+	module.getRadioStationsByIds = function(callback, ids) {
+		if (radioCache.isset()) {
+			console.log('Getting stations by Ids from cache___');
+			callback(radioCache.get_results_from_ids(ids));
+		}
+		else {
+			console.log('Getting stations by Ids from db___');
+			ids.forEach(function(obj, index, arr) {
+				arr[index] = mongoose.Types.ObjectId(obj);
+			});
+			RadioStation.find({
+				_id: { $in: ids }
+			}, function(err, results) {
+				callback(results);
+			});
+		}
+	}
+
 	module.getGenres = function(callback, page_number, pagination_size) {
 		callback(radioCache.get_genres((page_number) ? page_number : 0, pagination_size));
 	}
@@ -135,25 +153,17 @@ module.exports = function () {
 		callback(radioCache.get_languages((page_number) ? page_number : 0, pagination_size));
 	}
 
-	module.searchRadio = function(callback, keyword, from_db) {
-		if (from_db) {
-			console.log('radio search from trie db');
+	module.searchRadio = function(callback, keyword, from_db_trie) {
+		if (from_db_trie) {
+			console.log('radio search from trie db, because asked so___');
 			var s = new trieDbSearch(keyword, function(search_result_ids) {
-				if (radioCache.isset()) callback(radioCache.get_results_from_ids(search_result_ids));
-				else {
-					console.log('result objects retrieval from db as well');
-					search_result_ids.forEach(function(obj, index, arr) {
-						arr[index] = mongoose.Types.ObjectId(obj);
-					});
-					RadioStation.find({
-						_id: { $in: search_result_ids }
-					}, function(err, results) {
-						callback(results);
-					});
-				}
+				module.getRadioStationsByIds(callback, search_result_ids);
 			});
 		}
-		else callback(radioCache.search(keyword));
+		else {
+			console.log('radio search cache trie, because asked so___');
+			module.getRadioStationsByIds(callback, radioCache.search(keyword));
+		}
 	}
 
 	return module;

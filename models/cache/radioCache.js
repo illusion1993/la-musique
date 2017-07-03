@@ -13,14 +13,21 @@ module.exports = function () {
     return {
         build_trie: function (data, callback) {
             data.forEach(function(obj, index) {
-                var store_words = function(words) {
+                var insert_words = function(str) {
+                    str = str.toLowerCase().trim();
+                    var words = '';
+                    for (var i = 0; i < str.length; i++) {
+                        if (str[i] == ' ' || (str[i] >= '0' && str[i] <= '9') || (str[i] >= 'a' && str[i] <= 'z')) words += str[i];
+                        else if (words[words.length - 1] != ' ' && i != str.length - 1) words += ' ';
+                    }
+                    words = words.split(' ');
                     words.forEach(function(word) { trie.insert(word, obj._id); })
                 };
 
-                if (obj.title) { store_words(obj.title.toLowerCase().trim().split(' ')); }
-                if (obj.genre) { store_words(obj.genre.toLowerCase().trim().split(' ')); }
-                if (obj.location) { store_words(obj.location.toLowerCase().trim().split(' ')); }
-                if (obj.language) { store_words(obj.language.toLowerCase().trim().split(' ')); }
+                if (obj.title) { insert_words(obj.title); }
+                if (obj.genre) { insert_words(obj.genre); }
+                if (obj.location) { insert_words(obj.location); }
+                if (obj.language) { insert_words(obj.language); }
             });
             trie.total_nodes_count();
             console.log('Built radio trie___');
@@ -130,7 +137,7 @@ module.exports = function () {
         },
         
         search: function (keyword) {
-            return this.get_results_from_ids(trie.search(keyword, 1));
+            return trie.search(keyword, 0);
         },
 
         isset: function() { return cache_set; }

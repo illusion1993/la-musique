@@ -43,7 +43,7 @@ module.exports = function (config) {
 
 	module.searchRadioStations = function(req, res) {
 		if (req.query && req.query.keyword && req.query.keyword.trim()) {
-			radioStationModel.searchRadio(response(res), req.query.keyword.toLowerCase().trim(), (!config.BUILD_SEARCH_TRIE || config.STORE_SEARCH_TRIE));
+			radioStationModel.searchRadio(response(res), req.query.keyword.toLowerCase().trim(), !config.BUILD_SEARCH_TRIE);
 		}
 		else { res.json([]); }
 	}

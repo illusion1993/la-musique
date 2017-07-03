@@ -10,9 +10,9 @@ var constants = {
 	},
 	SETTINGS: {
 		RADIO: {
-			USE_IN_APP_CACHE: false,
+			USE_IN_APP_CACHE: true,
 			BUILD_SEARCH_TRIE: true,
-			STORE_SEARCH_TRIE: false,
+			STORE_SEARCH_TRIE: true,
 			PAGINATION: {
 				RADIO_STATIONS_LIST: 50,
 				RADIO_GENRES_LIST: 50,
