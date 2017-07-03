@@ -73,12 +73,12 @@ module.exports = function () {
 		this._find_next(-1);
 	}
 
-	module.buildRadioCache = function(callback, build_trie, store_trie) {
+	module.buildRadioCache = function(callback, build_cache, build_trie, store_trie) {
 		RadioStation.find(function(err, stations) {
 			if (stations) {
-				radioCache.set(stations);
+				if (build_cache) radioCache.set(stations);
 				if (build_trie) {
-					radioCache.build_trie(function() {console.log('Built Trie____')});
+					radioCache.build_trie(stations, function() {console.log('Built Trie____')});
 					if (store_trie) {
 						var trie_nodes = radioCache.get_trie_nodes();
 						trie_nodes[0].data = [];

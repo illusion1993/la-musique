@@ -11,8 +11,8 @@ module.exports = function () {
     var trie = new t.Trie();
     var cache_set = false;
     return {
-        build_trie: function (callback) {
-            COLLECTION.ALL_STATIONS.forEach(function(obj, index) {
+        build_trie: function (data, callback) {
+            data.forEach(function(obj, index) {
                 var store_words = function(words) {
                     words.forEach(function(word) { trie.insert(word, obj._id); })
                 };

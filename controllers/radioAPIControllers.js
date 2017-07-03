@@ -2,13 +2,10 @@ module.exports = function (config) {
 	var radioStationModel = require('../models/radioStationModel')();
 	var module = {};
 
-	// If In-App cache is enabled for radio, build cache
-	if (config.USE_IN_APP_CACHE) {
-		radioStationModel.buildRadioCache(function(err){
-			if (err) console.log(err);
-			else console.log('Built Radio Cache____');
-		}, config.BUILD_SEARCH_TRIE, config.STORE_SEARCH_TRIE);
-	}
+	radioStationModel.buildRadioCache(function(err){
+		if (err) console.log(err);
+		else console.log('Built Radio Cache____');
+	}, config.USE_IN_APP_CACHE, config.BUILD_SEARCH_TRIE, config.STORE_SEARCH_TRIE);
 
 	// Helper functions to handle request/response
 	function get_page_number(req) {
