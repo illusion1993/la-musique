@@ -4,6 +4,7 @@ module.exports = function () {
 	var trieDbConnection = require('./db/tries');
 	var radioCache = require('./cache/radioCache');
 	var mongoosePaginate = require('mongoose-paginate');
+	var requestsUtils = require('../utils/requestsUtils')();
 
 	// Schema for 'stations' collection in 'radio' db
 	var radioStationSchema = mongoose.Schema({
@@ -127,13 +128,7 @@ module.exports = function () {
 			RadioStation.paginate(filters, {page: page_number, limit: pagination_size, select: 'title genre stream location language'}, 
 				function(err, stations) {
 					if (err) console.log(err);
-					else callback({
-						results: stations.docs,
-						page_number: stations.page,
-						page_size: pagination_size,
-						total_pages: stations.pages,
-						total_items: stations.total
-					});
+					else callback(requestsUtils.transform_paginated_object(stations.docs, stations.page, stations.limit, stations.pages, stations.total));
 				}
 			);
 		}

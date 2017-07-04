@@ -14,5 +14,19 @@ module.exports = function () {
 		}
 	};
 
+	module.get_paginated_object = function (objects) {
+
+	};
+
+	module.transform_paginated_object = function (data, page, pagination_size, pages, items) {
+		return {
+			data: data,
+			page_number: page,
+			page_size: pagination_size,
+			total_pages: pages,
+			total_items: items
+		};
+	};
+
 	return module;
 };
