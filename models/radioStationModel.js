@@ -155,16 +155,28 @@ module.exports = function () {
 	module.getGenres = function(callback, page_number, pagination_size) {
 		if (radioCache.isset())
 			callback(requestsUtils.get_paginated_object(radioCache.get_genres(), page_number, pagination_size));
+		else RadioStation.find({}).distinct('genre', function (err, genres) {
+			if (err) console.log(err);
+			else callback(requestsUtils.get_paginated_object(genres, page_number, pagination_size));
+		});
 	};
 
 	module.getLocations = function(callback, page_number, pagination_size) {
 		if (radioCache.isset())
 			callback(requestsUtils.get_paginated_object(radioCache.get_locations(), page_number, pagination_size));
+		else RadioStation.find({}).distinct('location', function (err, locations) {
+			if (err) console.log(err);
+			else callback(requestsUtils.get_paginated_object(locations, page_number, pagination_size));
+		});
 	};
 
 	module.getLanguages = function(callback, page_number, pagination_size) {
 		if (radioCache.isset())
 			callback(requestsUtils.get_paginated_object(radioCache.get_languages(), page_number, pagination_size));
+		else RadioStation.find({}).distinct('language', function (err, languages) {
+			if (err) console.log(err);
+			else callback(requestsUtils.get_paginated_object(languages, page_number, pagination_size));
+		});
 	};
 
 	module.searchRadio = function(callback, keyword, from_db_trie) {
