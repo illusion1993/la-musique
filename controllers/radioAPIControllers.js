@@ -1,6 +1,6 @@
 module.exports = function (config) {
 	var radioStationModel = require('../models/radioStationModel')();
-	var requestsUtils = require('./utils/requestsUtils')();
+	var requestsUtils = require('../utils/requestsUtils')();
 	var module = {};
 
 	radioStationModel.buildRadioCache(function(err){
