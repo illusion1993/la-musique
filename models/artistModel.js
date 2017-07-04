@@ -16,6 +16,7 @@ module.exports.getArtists = function(callback, page_number) {
 		callback({
 			results: result.docs,
 			page_number: result.page,
+			page_size: page_size,
 			total_pages: result.pages,
 			total_items: result.total
 		});

@@ -3,6 +3,7 @@ module.exports = function () {
 	var dbConnection = require('./db/radio');
 	var trieDbConnection = require('./db/tries');
 	var radioCache = require('./cache/radioCache');
+	var mongoosePaginate = require('mongoose-paginate');
 
 	// Schema for 'stations' collection in 'radio' db
 	var radioStationSchema = mongoose.Schema({
@@ -14,6 +15,7 @@ module.exports = function () {
 		language: { type: String },
 		protocol: { type: String }
 	});
+	radioStationSchema.plugin(mongoosePaginate);
 
 	// Schema for 'radios' collection in 'tries' db
 	var trieNodeSchema = mongoose.Schema({
@@ -119,7 +121,22 @@ module.exports = function () {
 	}
 
 	module.getRadioStations = function(callback, filters, page_number, pagination_size) {
-		callback(radioCache.get_stations(filters, (page_number) ? page_number : 0, pagination_size));
+		if (radioCache.isset())
+			callback(radioCache.get_stations(filters, page_number, pagination_size));
+		else {
+			RadioStation.paginate(filters, {page: page_number, limit: pagination_size, select: 'title genre stream location language'}, 
+				function(err, stations) {
+					if (err) console.log(err);
+					else callback({
+						results: stations.docs,
+						page_number: stations.page,
+						page_size: pagination_size,
+						total_pages: stations.pages,
+						total_items: stations.total
+					});
+				}
+			);
+		}
 	}
 
 	module.getRadioStationsByIds = function(callback, ids) {
@@ -141,15 +158,15 @@ module.exports = function () {
 	}
 
 	module.getGenres = function(callback, page_number, pagination_size) {
-		callback(radioCache.get_genres((page_number) ? page_number : 0, pagination_size));
+		callback(radioCache.get_genres(page_number, pagination_size));
 	}
 
 	module.getLocations = function(callback, page_number, pagination_size) {
-		callback(radioCache.get_locations((page_number) ? page_number : 0, pagination_size));
+		callback(radioCache.get_locations(page_number, pagination_size));
 	}
 
 	module.getLanguages = function(callback, page_number, pagination_size) {
-		callback(radioCache.get_languages((page_number) ? page_number : 0, pagination_size));
+		callback(radioCache.get_languages(page_number, pagination_size));
 	}
 
 	module.searchRadio = function(callback, keyword, from_db_trie) {

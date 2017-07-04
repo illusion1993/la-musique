@@ -60,6 +60,8 @@ module.exports = function () {
         },
 
         _get: function(page_number, pagination_size, collection_number) {
+            // Make 'page_number' 0 based index, for plucking correct elements from array
+            page_number -= 1;
             var collection_sizes = [
                 0, 
                 COLLECTION.ALL_STATIONS.length, 
@@ -89,6 +91,8 @@ module.exports = function () {
         get_stations: function (filters, page_number, pagination_size) {
             if (!filters.genre && !filters.location && !filters.language) return this._get(page_number, pagination_size, 1);
             else {
+                // Make 'page_number' 0 based index, for plucking correct elements from array
+                page_number -= 1;
                 var results = [], page_results = [], collection_size;
                 COLLECTION.ALL_STATIONS.forEach(function(station) {
                     var okay_to_add = true;

@@ -3,7 +3,7 @@ module.exports = function () {
 
 	// To extract 'page' query parameter from request (?page=3)
 	module.get_page_number = function (req) {
-		return (req.query && req.query.page && (req.query.page == parseInt(req.query.page))) ? req.query.page - 1 : 0;
+		return (req.query && req.query.page && (req.query.page == parseInt(req.query.page))) ? req.query.page : 1;
 	};
 
 	// To give API response
