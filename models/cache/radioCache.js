@@ -58,42 +58,11 @@ module.exports = function () {
             COLLECTION.ALL_LANGUAGES = Object.keys(map.language);
             console.log('Built radio cache___');
         },
-
-        _get: function(page_number, pagination_size, collection_number) {
-            // Make 'page_number' 0 based index, for plucking correct elements from array
-            page_number -= 1;
-            var collection_sizes = [
-                0, 
-                COLLECTION.ALL_STATIONS.length, 
-                COLLECTION.ALL_GENRES.length, 
-                COLLECTION.ALL_LOCATIONS.length, 
-                COLLECTION.ALL_LANGUAGES.length
-            ];
-            var collection_size = collection_sizes[collection_number];
-            var begin = page_number * pagination_size, end = begin + pagination_size;
-            var results = [];
-            while(begin < end && begin < collection_size) {
-                if (collection_number == 1) results.push(COLLECTION.ALL_STATIONS[begin]);
-                if (collection_number == 2) results.push(COLLECTION.ALL_GENRES[begin]);
-                if (collection_number == 3) results.push(COLLECTION.ALL_LOCATIONS[begin]);
-                if (collection_number == 4) results.push(COLLECTION.ALL_LANGUAGES[begin]);
-                begin++;
-            }
-            return {
-                results: results,
-                page_number: page_number + 1,
-                page_size: pagination_size,
-                total_pages: parseInt(collection_size / pagination_size) + (collection_size % pagination_size != 0),
-                total_items: collection_size
-            };
-        },
         
         get_stations: function (filters, page_number, pagination_size) {
-            if (!filters.genre && !filters.location && !filters.language) return this._get(page_number, pagination_size, 1);
+            if (!filters.genre && !filters.location && !filters.language) return COLLECTION.ALL_STATIONS;
             else {
-                // Make 'page_number' 0 based index, for plucking correct elements from array
-                page_number -= 1;
-                var results = [], page_results = [], collection_size;
+                var results = [];
                 COLLECTION.ALL_STATIONS.forEach(function(station) {
                     var okay_to_add = true;
                     for (filter_name in filters) {
@@ -102,34 +71,20 @@ module.exports = function () {
                     }
                     if (okay_to_add) results.push(station);
                 });
-
-                collection_size = results.length;
-                var begin = page_number * pagination_size, end = begin + pagination_size;
-
-                while(begin < end && begin < collection_size) {
-                    page_results.push(results[begin]);
-                    begin++;
-                }
-                return {
-                    results: page_results,
-                    page_number: page_number + 1,
-                    page_size: pagination_size,
-                    total_pages: parseInt(collection_size / pagination_size) + (collection_size % pagination_size != 0),
-                    total_items: collection_size
-                };
+                return results;
             }
         },
         
         get_genres: function (page_number, pagination_size) {
-            return this._get(page_number, pagination_size, 2);
+            return COLLECTION.ALL_GENRES;
         },
         
         get_locations: function (page_number, pagination_size) {
-            return this._get(page_number, pagination_size, 3);
+            return COLLECTION.ALL_LOCATIONS;
         },
         
         get_languages: function (page_number, pagination_size) {
-            return this._get(page_number, pagination_size, 4);
+            return COLLECTION.ALL_LANGUAGES;
         },
 
         get_results_from_ids: function (ids) {

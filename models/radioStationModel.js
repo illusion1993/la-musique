@@ -73,7 +73,7 @@ module.exports = function () {
 			});
 		};
 		this._find_next(-1);
-	}
+	};
 
 	module.buildRadioCache = function(callback, build_cache, build_trie, store_trie) {
 		RadioStation.find(function(err, stations) {
@@ -119,20 +119,7 @@ module.exports = function () {
 			}
 			if (callback && typeof(callback) == 'function') callback(err);
 		}).select('title genre stream location language');
-	}
-
-	module.getRadioStations = function(callback, filters, page_number, pagination_size) {
-		if (radioCache.isset())
-			callback(radioCache.get_stations(filters, page_number, pagination_size));
-		else {
-			RadioStation.paginate(filters, {page: page_number, limit: pagination_size, select: 'title genre stream location language'}, 
-				function(err, stations) {
-					if (err) console.log(err);
-					else callback(requestsUtils.transform_paginated_object(stations.docs, stations.page, stations.limit, stations.pages, stations.total));
-				}
-			);
-		}
-	}
+	};
 
 	module.getRadioStationsByIds = function(callback, ids) {
 		if (radioCache.isset()) {
@@ -150,19 +137,35 @@ module.exports = function () {
 				callback(results);
 			});
 		}
-	}
+	};
+
+	module.getRadioStations = function(callback, filters, page_number, pagination_size) {
+		if (radioCache.isset())
+			callback(requestsUtils.get_paginated_object(radioCache.get_stations(filters), page_number, pagination_size));
+		else {
+			RadioStation.paginate(filters, {page: page_number, limit: pagination_size, select: 'title genre stream location language'}, 
+				function(err, stations) {
+					if (err) console.log(err);
+					else callback(requestsUtils.transform_paginated_object(stations.docs, stations.page, stations.limit, stations.pages, stations.total));
+				}
+			);
+		}
+	};
 
 	module.getGenres = function(callback, page_number, pagination_size) {
-		callback(radioCache.get_genres(page_number, pagination_size));
-	}
+		if (radioCache.isset())
+			callback(requestsUtils.get_paginated_object(radioCache.get_genres(), page_number, pagination_size));
+	};
 
 	module.getLocations = function(callback, page_number, pagination_size) {
-		callback(radioCache.get_locations(page_number, pagination_size));
-	}
+		if (radioCache.isset())
+			callback(requestsUtils.get_paginated_object(radioCache.get_locations(), page_number, pagination_size));
+	};
 
 	module.getLanguages = function(callback, page_number, pagination_size) {
-		callback(radioCache.get_languages(page_number, pagination_size));
-	}
+		if (radioCache.isset())
+			callback(requestsUtils.get_paginated_object(radioCache.get_languages(), page_number, pagination_size));
+	};
 
 	module.searchRadio = function(callback, keyword, from_db_trie) {
 		if (from_db_trie) {
@@ -175,7 +178,7 @@ module.exports = function () {
 			console.log('radio search cache trie, because asked so___');
 			module.getRadioStationsByIds(callback, radioCache.search(keyword));
 		}
-	}
+	};
 
 	return module;
 }
