@@ -19,7 +19,15 @@ var constants = {
 				RADIO_LOCATIONS_LIST: 50,
 				RADIO_LANGUAGES_LIST: 50
 			}
-		}
+		},
+		DISCOGS: {
+			USE_IN_APP_CACHE: false,
+			BUILD_SEARCH_TRIE: false,
+			STORE_SEARCH_TRIE: false,
+			PAGINATION: {
+				ARTISTS_LIST: 50
+			}
+		},
 	},
 	
 	RADIO_STATIONS_LIST_API_PAGINATION_LIMIT: 50,

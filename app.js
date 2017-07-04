@@ -14,7 +14,7 @@ const settings = appConstants.getConstant('SETTINGS');
 // Import controllers
 var homePageControllers = require('./controllers/homePageControllers');
 var radioAPIControllers = require('./controllers/radioAPIControllers')(settings.RADIO);
-var artistAPIControllers = require('./controllers/artistAPIControllers');
+var artistAPIControllers = require('./controllers/artistAPIControllers')(settings.DISCOGS);
 
 // Home Pages
 app.get(routes.APP_HOME, homePageControllers.getHomePage);
