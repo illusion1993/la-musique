@@ -25,7 +25,8 @@ var constants = {
 			BUILD_SEARCH_TRIE: false,
 			STORE_SEARCH_TRIE: false,
 			PAGINATION: {
-				ARTISTS_LIST: 50
+				ARTISTS_LIST: 50,
+				SONGS_LIST: 100
 			}
 		},
 	},
