@@ -4,8 +4,6 @@ module.exports = function () {
 	var trieDbConnection = require('./db/tries');
 	var radioCache = require('./cache/radioCache');
 
-	var cache_exists = trie_exists = false;
-
 	// Schema for 'stations' collection in 'radio' db
 	var radioStationSchema = mongoose.Schema({
 		title: { type: String },
@@ -30,6 +28,7 @@ module.exports = function () {
 	var TrieNodeModel = trieDbConnection.model('radio', trieNodeSchema);
 
 	// Function to instantiate a trie search from db
+	// Returns mongo ids of results
 	function trieDbSearch(keyword, callback, connection) {
 		this.nodes = [];
 		this.keyword = keyword || '';
