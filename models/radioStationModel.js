@@ -106,8 +106,9 @@ module.exports = function () {
 								TrieNodeModel.insertMany(current_batch, function(err) {
 									if (err) console.log(err);
 									else {
-										console.log('inserted one more batch.');
+										// console.log('inserted one more batch.');
 										if (next_node < trie_nodes.length) insert_batch();
+										else radioCache.clear_trie_data();
 									}
 								})
 							}
@@ -188,7 +189,16 @@ module.exports = function () {
 		}
 		else {
 			console.log('radio search cache trie, because asked so___');
-			module.getRadioStationsByIds(callback, radioCache.search(keyword));
+			// module.getRadioStationsByIds(callback, radioCache.search(keyword));
+			var node_index = radioCache.search(keyword);
+			if (node_index > 0) {
+				TrieNodeModel.findOne({index: node_index}, function(err, node) {
+					console.log('Got the same node from trie db: ');
+					node = JSON.parse(JSON.stringify(node));
+					console.log(node);
+					module.getRadioStationsByIds(callback, node.data);
+				}).select('data');
+			}
 		}
 	};
 

@@ -22,9 +22,9 @@ Node.prototype.insert = function(word, data, index) {
 }
 
 Node.prototype.search = function(keyword, index) {
-	if (index == keyword.length) return this.data;
+	if (index == keyword.length) return this.index;
 	if (this[keyword[index]]) return NODE_LIST[this[keyword[index]]].search(keyword, index + 1);
-	return [];
+	return -1;
 }
 
 function Trie() {
@@ -61,6 +61,13 @@ Trie.prototype.total_nodes_count = function() {
 
 Trie.prototype.get_nodes = function() {
 	return NODE_LIST;
+}
+
+Trie.prototype.clear_data = function() {
+	NODE_LIST.forEach(function(obj, index, arr) {
+		arr[index].data = undefined;
+	});
+	console.log('cleared all data arrays from cache trie');
 }
 
 exports.Trie = Trie;

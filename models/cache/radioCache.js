@@ -99,6 +99,10 @@ module.exports = function () {
             return trie.search(keyword, 0);
         },
 
-        isset: function() { return cache_set; }
+        isset: function() { return cache_set; },
+
+        clear_trie_data: function() {
+            trie.clear_data();
+        }
     }
 }();
