@@ -6,7 +6,10 @@ var constants = {
 		RADIO_GENRES_LIST_API: '/api/radio/genres',
 		RADIO_LOCATIONS_LIST_API: '/api/radio/locations',
 		RADIO_LANGUAGES_LIST_API: '/api/radio/languages',
-		RADIO_SEARCH_API: '/api/radio/search'
+		RADIO_SEARCH_API: '/api/radio/search',
+		ARTISTS_LIST_API: '/api/artists',
+		SONGS_LIST_API: '/api/songs',
+		RELEASES_LIST_API: '/api/releases'
 	},
 	SETTINGS: {
 		RADIO: {
@@ -26,7 +29,8 @@ var constants = {
 			STORE_SEARCH_TRIE: false,
 			PAGINATION: {
 				ARTISTS_LIST: 50,
-				SONGS_LIST: 100
+				SONGS_LIST: 100,
+				RELEASES_LIST: 100
 			}
 		},
 	},

@@ -16,6 +16,7 @@ var homePageControllers = require('./controllers/homePageControllers');
 var radioAPIControllers = require('./controllers/radioAPIControllers')(settings.RADIO);
 var artistAPIControllers = require('./controllers/artistAPIControllers')(settings.DISCOGS);
 var songAPIControllers = require('./controllers/songAPIControllers')(settings.DISCOGS);
+var releaseAPIControllers = require('./controllers/releaseAPIControllers')(settings.DISCOGS);
 
 // Home Pages
 app.get(routes.APP_HOME, homePageControllers.getHomePage);
@@ -29,10 +30,13 @@ app.get(routes.RADIO_LANGUAGES_LIST_API, radioAPIControllers.getRadioLanguages);
 app.get(routes.RADIO_SEARCH_API, radioAPIControllers.searchRadioStations);
 
 // Artists APIs
-app.get('/api/artists', artistAPIControllers.getArtists);
+app.get(routes.ARTISTS_LIST_API, artistAPIControllers.getArtists);
 
 // Songs APIs
-app.get('/api/songs', songAPIControllers.getSongs);
+app.get(routes.SONGS_LIST_API, songAPIControllers.getSongs);
+
+// Releases APIs
+app.get(routes.RELEASES_LIST_API, releaseAPIControllers.getReleases);
 
 console.log('App running on port ' + node_port);
 app.listen(node_port);
