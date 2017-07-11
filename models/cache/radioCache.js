@@ -1,4 +1,4 @@
-var t = require('./trie');
+var t = require('./trie')();
 
 module.exports = function () {
     var COLLECTION = {};

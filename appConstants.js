@@ -8,6 +8,7 @@ var constants = {
 		RADIO_LANGUAGES_LIST_API: '/api/radio/languages',
 		RADIO_SEARCH_API: '/api/radio/search',
 		ARTISTS_LIST_API: '/api/artists',
+		ARTISTS_SEARCH_API: '/api/artists/search',
 		SONGS_LIST_API: '/api/songs',
 		RELEASES_LIST_API: '/api/releases'
 	},
@@ -25,8 +26,8 @@ var constants = {
 		},
 		DISCOGS: {
 			USE_IN_APP_CACHE: false,
-			BUILD_SEARCH_TRIE: false,
-			STORE_SEARCH_TRIE: false,
+			BUILD_SEARCH_TRIE: true,
+			STORE_SEARCH_TRIE: true,
 			PAGINATION: {
 				ARTISTS_LIST: 50,
 				SONGS_LIST: 100,

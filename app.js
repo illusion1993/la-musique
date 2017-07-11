@@ -31,6 +31,7 @@ app.get(routes.RADIO_SEARCH_API, radioAPIControllers.searchRadioStations);
 
 // Artists APIs
 app.get(routes.ARTISTS_LIST_API, artistAPIControllers.getArtists);
+app.get(routes.ARTISTS_SEARCH_API, artistAPIControllers.searchArtists);
 
 // Songs APIs
 app.get(routes.SONGS_LIST_API, songAPIControllers.getSongs);
