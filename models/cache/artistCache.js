@@ -23,7 +23,7 @@ module.exports = function () {
                 };
 
                 if (obj.realname) { insert_words(obj.realname); }
-                if (obj.l_name) { insert_words(obj.l_name); }
+                if (obj.name) { insert_words(obj.name); }
             });
             trie.total_nodes_count();
             console.log('Built artist trie___');

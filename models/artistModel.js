@@ -113,7 +113,7 @@ module.exports = function () {
 				}
 			}
 			if (callback && typeof(callback) == 'function') callback(err);
-		});
+		}).select('name realname');
 	};
 
 	module.getArtistsByIds = function(callback, ids) {
