@@ -3,6 +3,7 @@ module.exports = function (config) {
 	var requestsUtils = require('../utils/requestsUtils')();
 	var module = {};
 
+	console.log('radioAPIController going to call buildRadioCache on radioStationModel');
 	radioStationModel.buildRadioCache(function(err){
 		if (err) console.log(err);
 	}, config.USE_IN_APP_CACHE, config.BUILD_SEARCH_TRIE, config.STORE_SEARCH_TRIE);

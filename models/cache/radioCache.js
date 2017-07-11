@@ -12,6 +12,7 @@ module.exports = function () {
     var cache_set = false;
     return {
         build_trie: function (data, callback) {
+            console.log('build_trie called on radioCache, data length is ' + data.length);
             data.forEach(function(obj, index) {
                 var insert_words = function(str) {
                     str = str.toLowerCase().trim();

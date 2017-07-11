@@ -70,7 +70,9 @@ module.exports = function () {
 	};
 
 	module.buildArtistCache = function(callback, build_cache, build_trie, store_trie) {
+		console.log('buildArtistCache called on artistModel');
 		Artist.find(function(err, artists) {
+			console.log('Collected all artists from db');
 			if (artists) {
 				if (build_cache) artistCache.set(artists);
 				if (build_trie) {

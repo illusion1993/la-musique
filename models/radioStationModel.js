@@ -76,7 +76,9 @@ module.exports = function () {
 	};
 
 	module.buildRadioCache = function(callback, build_cache, build_trie, store_trie) {
+		console.log('buildRadioCache called on radioStationModel');
 		RadioStation.find(function(err, stations) {
+			console.log('Collected all stations from db');
 			if (stations) {
 				if (build_cache) radioCache.set(stations);
 				if (build_trie) {

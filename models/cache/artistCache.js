@@ -10,6 +10,7 @@ module.exports = function () {
     return {
         build_trie: function (data, callback) {
             data = JSON.parse(JSON.stringify(data));
+            console.log('build_trie called on artistCache, data length is ' + data.length);
             data.forEach(function(obj, index) {
                 var insert_words = function(str) {
                     str = str.toLowerCase().trim();
